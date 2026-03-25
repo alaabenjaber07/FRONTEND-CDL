@@ -1,0 +1,55 @@
+<div class="header">
+    <h2>Créer une Nouvelle Table Dynamique</h2>
+    <p>Cette table sera générée directement dans Oracle et gérée par notre application.</p>
+</div>
+
+<mat-card class="schema-card">
+    <mat-card-content>
+        <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nom de la Table (ex: CDL_NOUVELLE_TABLE)</mat-label>
+                <input matInput [(ngModel)]="tableName" placeholder="CDL_..." required>
+            </mat-form-field>
+        </div>
+
+        <h3>Colonnes</h3>
+        <div class="columns-list">
+            <div class="col-row" *ngFor="let col of columns; let i = index">
+
+                <mat-form-field appearance="outline" class="col-name">
+                    <mat-label>Nom de Colonne</mat-label>
+                    <input matInput [(ngModel)]="col.name" required>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="col-type">
+                    <mat-label>Type (Oracle)</mat-label>
+                    <mat-select [(ngModel)]="col.type" required>
+                        <mat-option *ngFor="let type of typeOptions" [value]="type">
+                            {{ type }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-checkbox [(ngModel)]="col.primaryKey" color="primary" class="col-pk">
+                    Clé Primaire
+                </mat-checkbox>
+
+                <button mat-icon-button color="warn" (click)="removeColumn(i)" *ngIf="columns.length > 1">
+                    <mat-icon>delete</mat-icon>
+                </button>
+
+            </div>
+        </div>
+
+        <button mat-stroked-button color="primary" (click)="addColumn()">
+            <mat-icon>add</mat-icon> Ajouter Colonne
+        </button>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+        <button mat-button routerLink="/dashboard">Annuler</button>
+        <button mat-raised-button color="primary" (click)="createTable()">
+            Générer Table Oracle
+        </button>
+    </mat-card-actions>
+</mat-card>

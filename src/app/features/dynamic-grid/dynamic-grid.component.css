@@ -1,0 +1,39 @@
+.grid-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.search-input {
+    width: 250px;
+}
+
+.table-container {
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+.table-scroll {
+    overflow-x: auto;
+    max-height: calc(100vh - 250px);
+}
+
+table {
+    width: 100%;
+}
+
+.edit-input {
+    width: 100%;
+    margin-bottom: -1.25em;
+}
+
+.hidden {
+    display: none !important;
+}

@@ -1,0 +1,50 @@
+.header {
+    margin-bottom: 24px;
+}
+
+.schema-card {
+    max-width: 900px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.columns-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.col-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.col-row:hover {
+    background: #f1f5f9;
+}
+
+.col-row mat-form-field {
+    margin-bottom: -1.25em;
+}
+
+.col-name {
+    flex: 2;
+}
+
+.col-type {
+    flex: 1;
+}
+
+.col-pk {
+    margin-left: 16px;
+    margin-right: 16px;
+}
