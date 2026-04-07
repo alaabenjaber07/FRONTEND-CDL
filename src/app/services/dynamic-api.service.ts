@@ -29,12 +29,20 @@ export class DynamicApiService {
         return this.http.post(`${this.baseUrl}/dynamic/${tableName}`, data);
     }
 
+    insertBulk(tableName: string, dataArray: any[]): Observable<any> {
+        return this.http.post(`${this.baseUrl}/dynamic/${tableName}/bulk`, dataArray);
+    }
+
     updateRow(tableName: string, keys: any, data: any): Observable<any> {
         return this.http.put(`${this.baseUrl}/dynamic/${tableName}`, { keys, data });
     }
 
     deleteRow(tableName: string, keys: any): Observable<any> {
         return this.http.delete(`${this.baseUrl}/dynamic/${tableName}`, { body: keys });
+    }
+
+    deleteAll(tableName: string): Observable<any> {
+        return this.http.delete(`${this.baseUrl}/dynamic/${tableName}/all`);
     }
 
     // Schema
@@ -49,5 +57,9 @@ export class DynamicApiService {
 
     getLogsByTable(tableName: string): Observable<AuditLog[]> {
         return this.http.get<AuditLog[]>(`${this.baseUrl}/audit/${tableName}`);
+    }
+
+    revertAction(id: number): Observable<any> {
+        return this.http.post(`${this.baseUrl}/audit/revert/${id}`, {}, { responseType: 'text' });
     }
 }

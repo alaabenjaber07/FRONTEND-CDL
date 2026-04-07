@@ -1,11 +1,51 @@
-<mat-toolbar color="primary" class="main-toolbar">
-  <span>Dashboard Ajustement CDL</span>
-  <span class="spacer"></span>
-  <button mat-button routerLink="/dashboard">Accueil</button>
-  <button mat-button routerLink="/schema-manager">Gérer Tables</button>
-  <button mat-button routerLink="/audit">Logs & Audit</button>
-</mat-toolbar>
+<div class="app-container">
+  <mat-toolbar class="main-toolbar">
+    <div class="logo-group" routerLink="/dashboard">
+      <div class="bank-logo-container">
+        <img *ngIf="!logoError" src="assets/attijari-logo.png" alt="Attijari Bank" class="bank-logo-img"
+          (error)="handleLogoError()">
+        <mat-icon *ngIf="logoError" class="brand-icon-fallback">account_balance</mat-icon>
+      </div>
+      <span class="logo-text">CDL</span>
+    </div>
 
-<main class="main-container">
-  <router-outlet></router-outlet>
-</main>
+    <div class="nav-links">
+      <button mat-button routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+        class="nav-item">
+        <mat-icon>dashboard</mat-icon> DASHBOARD
+      </button>
+      <button mat-button routerLink="/query-executor" routerLinkActive="active" class="nav-item">
+        <mat-icon>bolt</mat-icon> EXÉCUTION CDL
+      </button>
+
+      <ng-container *ngIf="authService.isAdmin()">
+        <button mat-button routerLink="/query-config-manager" routerLinkActive="active" class="nav-item">
+          <mat-icon>tune</mat-icon> CONFIG
+        </button>
+        <button mat-button routerLink="/audit" routerLinkActive="active" class="nav-item">
+          <mat-icon>security</mat-icon> AUDIT
+        </button>
+        <button mat-button routerLink="/schema-manager" routerLinkActive="active" class="nav-item">
+          <mat-icon>add_box</mat-icon> TABLES
+        </button>
+      </ng-container>
+    </div>
+
+    <span class="spacer"></span>
+
+    <div class="user-node" *ngIf="authService.isLoggedIn()">
+      <mat-icon>account_circle</mat-icon>
+      <div class="user-info-text">
+        <span class="username-label">{{ authService.getCurrentUser()?.username }}</span>
+        <span class="role-tag">{{ authService.isAdmin() ? 'ADMIN' : 'USER' }}</span>
+      </div>
+      <button mat-icon-button (click)="logout()" title="Déconnexion" class="logout-btn">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+  </mat-toolbar>
+
+  <main class="main-container">
+    <router-outlet></router-outlet>
+  </main>
+</div>

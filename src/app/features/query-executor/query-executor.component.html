@@ -1,0 +1,154 @@
+<div class="executor-container">
+    <div class="premium-layout">
+
+        <div class="grid-header-elite">
+            <div class="header-left" style="margin-left: 24px;">
+                <button mat-icon-button (click)="goBack()" title="Retour" class="back-btn-elite">
+                    <mat-icon>arrow_back</mat-icon>
+                </button>
+                <div class="title-group">
+                    <div class="subtitle-nexus">CONTRÔLEUR D'EXÉCUTION</div>
+                    <h2>Exécution des Processus</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content-grid">
+
+            <!-- Execution Card Centered -->
+            <div class="card-center-wrapper">
+                <mat-card class="execution-card shadow-premium">
+                    <mat-card-header>
+                        <mat-card-title>Lanceur de Traitement CDL</mat-card-title>
+                        <mat-card-subtitle>Configuration : default_process</mat-card-subtitle>
+                        <span class="spacer"></span>
+                        <button mat-stroked-button color="primary" *ngIf="authService.isAdmin() && !isExecuting"
+                            (click)="toggleEditSql()" class="edit-sql-btn">
+                            <mat-icon>{{ isEditingSql ? 'visibility' : 'code' }}</mat-icon>
+                            {{ isEditingSql ? 'VOIR LANCEUR' : 'MODIFIER SQL' }}
+                        </button>
+                    </mat-card-header>
+
+                    <mat-card-content class="centered-content">
+
+                        <!-- SQL Editor Area -->
+                        <div class="sql-editor-zone" *ngIf="isEditingSql && authService.isAdmin() && !isExecuting">
+                            <div class="header-editor">
+                                <mat-icon>terminal</mat-icon>
+                                <span>Éditeur de Script PL/SQL</span>
+                            </div>
+                            <mat-form-field appearance="fill" class="full-width sql-field">
+                                <textarea matInput [(ngModel)]="currentSql" rows="12"></textarea>
+                            </mat-form-field>
+                            <div class="editor-actions">
+                                <button mat-raised-button color="primary" (click)="saveSql()">
+                                    <mat-icon>save</mat-icon> ENREGISTRER LES MODIFICATIONS
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Main Play Button Area -->
+                        <div class="play-zone" *ngIf="!passwordPromptVisible && !isEditingSql">
+                            <button class="pulse-button compact" (click)="startExecution()"
+                                [disabled]="isExecuting || (progress > 0 && progress < 100)">
+                                <mat-icon *ngIf="!isExecuting">play_arrow</mat-icon>
+                                <mat-spinner *ngIf="isExecuting" diameter="30" color="accent"></mat-spinner>
+                            </button>
+                            <h3 [class.active-text]="isExecuting">{{ statusMessage || 'Prêt à lancer' }}</h3>
+                        </div>
+
+                        <!-- Password Prompt Area -->
+                        <div class="password-prompt-zone" *ngIf="passwordPromptVisible">
+                            <mat-icon class="lock-icon">lock</mat-icon>
+                            <h4>Validation Requise</h4>
+                            <p>Entrez le mot de passe pour confirmer l'exécution</p>
+
+                            <mat-form-field appearance="outline" class="full-width">
+                                <mat-label>Mot de passe</mat-label>
+                                <input matInput type="password" [(ngModel)]="inputPassword"
+                                    (keyup.enter)="confirmExecution()">
+                                <mat-error *ngIf="passwordError">Mot de passe incorrect</mat-error>
+                            </mat-form-field>
+
+                            <div class="prompt-actions">
+                                <button mat-button (click)="cancelExecution()">ANNULER</button>
+                                <button mat-raised-button color="primary" (click)="confirmExecution()">VALIDER</button>
+                            </div>
+                        </div>
+
+                        <div class="progress-container-premium"
+                            *ngIf="(isExecuting || isCompleted) && !passwordPromptVisible">
+                            <div class="progress-stats">
+                                <span class="label">Progression du traitement</span>
+                                <span class="value">{{ progress }}%</span>
+                            </div>
+                            <div class="modern-progress-bar">
+                                <div class="fill" [style.width.%]="progress"></div>
+                            </div>
+
+                            <div class="current-step-indicator" *ngIf="isExecuting && currentStepMessage">
+                                <mat-icon class="spin-icon">settings</mat-icon>
+                                <span>{{ currentStepMessage }}</span>
+                            </div>
+                        </div>
+
+                        <div class="info-footer" *ngIf="isExecuting">
+                            <mat-icon>hourglass_empty</mat-icon>
+                            <span>Temps estimé restant : ~{{ (100 - progress) * 1.2 | number:'1.0-0' }}s</span>
+                        </div>
+
+                        <div class="info-footer" *ngIf="lastExecutedBy && !isExecuting && !passwordPromptVisible">
+                            <mat-icon>history</mat-icon>
+                            <span>Dernier passage par <strong>{{ lastExecutedBy }}</strong> le {{ lastExecutedAt |
+                                date:'medium' }}</span>
+                        </div>
+                    </mat-card-content>
+
+                    <mat-card-actions class="actions-centered" *ngIf="isCompleted && !passwordPromptVisible">
+                        <button mat-raised-button color="accent" class="extract-btn" (click)="extractExcel()">
+                            <mat-icon>cloud_download</mat-icon> EXTRAIRE EN EXCEL
+                        </button>
+                    </mat-card-actions>
+                </mat-card>
+            </div>
+
+            <!-- Admin Logs Table -->
+            <div class="logs-section" *ngIf="authService.isAdmin()">
+                <div class="section-title">
+                    <mat-icon>assignment</mat-icon>
+                    <h3>Historique Complet des Exécutions CDL</h3>
+                </div>
+
+                <div class="table-wrapper shadow-premium">
+                    <table mat-table [dataSource]="executionLogs" class="full-width-table">
+                        <ng-container matColumnDef="date">
+                            <th mat-header-cell *matHeaderCellDef>Date</th>
+                            <td mat-cell *matCellDef="let element">{{ element.executionDate | date:'short' }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="user">
+                            <th mat-header-cell *matHeaderCellDef>Utilisateur</th>
+                            <td mat-cell *matCellDef="let element">{{ element.executedBy }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="status">
+                            <th mat-header-cell *matHeaderCellDef>Statut</th>
+                            <td mat-cell *matCellDef="let element">
+                                <span class="badge" [class.badge-success]="element.status === 'SUCCESS'"
+                                    [class.badge-error]="element.status && element.status.includes('FAILED')"
+                                    [class.badge-warning]="element.status === 'STARTED'">
+                                    {{ element.status }}
+                                </span>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="['date', 'user', 'status']"></tr>
+                        <tr mat-row *matRowDef="let row; columns: ['date', 'user', 'status']"></tr>
+                    </table>
+
+                    <div class="empty-state" *ngIf="executionLogs.length === 0">
+                        Aucun historique disponible.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

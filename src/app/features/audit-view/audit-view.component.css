@@ -1,21 +1,57 @@
-.header {
-    margin-bottom: 24px;
+.grid-header-elite {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
 }
 
-.full-width-table {
-    width: 100%;
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.title-group h2 {
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
+
+.subtitle-nexus {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--primary-brand);
+    letter-spacing: 0.1em;
+    margin-bottom: 2px;
+}
+
+.nexus-actions {
+    display: flex;
+    align-items: center;
+}
+
+.search-nexus {
+    width: 350px;
+    margin-bottom: -1.25em;
+}
+
+.table-container {
+    padding: 0 !important;
+    overflow: hidden;
+    background: white !important;
 }
 
 .badge {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
     color: white;
 }
 
 .INSERT {
-    background-color: #10b981;
+    background-color: var(--success-emerald);
 }
 
 .UPDATE {
@@ -23,23 +59,23 @@
 }
 
 .DELETE {
-    background-color: #ef4444;
+    background-color: var(--error-rose);
 }
 
 .json-cell {
-    font-family: monospace;
-    font-size: 12px;
-    max-width: 400px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.75rem;
+    max-width: 300px;
+    padding: 10px !important;
 }
 
 .json-old {
-    color: #ef4444;
+    color: var(--error-rose);
+    border-bottom: 1px dashed #fee2e2;
+    padding-bottom: 4px;
     margin-bottom: 4px;
 }
 
 .json-new {
-    color: #10b981;
+    color: var(--success-emerald);
 }

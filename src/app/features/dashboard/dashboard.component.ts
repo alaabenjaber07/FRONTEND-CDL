@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DynamicApiService } from '../../services/dynamic-api.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-dashboard',
@@ -10,7 +11,7 @@ export class DashboardComponent implements OnInit {
     tables: any[] = [];
     loading = true;
 
-    constructor(private api: DynamicApiService) { }
+    constructor(private api: DynamicApiService, public authService: AuthService) { }
 
     ngOnInit(): void {
         this.api.getTables().subscribe({

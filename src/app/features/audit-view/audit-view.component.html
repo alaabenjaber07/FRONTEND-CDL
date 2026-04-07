@@ -1,49 +1,77 @@
-<div class="header">
-    <h2>Historique d'Audit Centralisé</h2>
-    <p>Toutes les modifications sur les tables dynamiques sont loggées ici.</p>
+<div class="grid-header-elite">
+    <div class="header-left">
+        <button mat-icon-button (click)="goBack()" title="Retour" class="back-btn-elite">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div class="title-group">
+            <div class="subtitle-nexus">TRAÇABILITÉ TOTALE</div>
+            <h2>Historique d'Audit Centralisé</h2>
+        </div>
+    </div>
+
+    <div class="nexus-actions">
+        <mat-form-field appearance="outline" class="search-nexus">
+            <mat-icon matPrefix>search</mat-icon>
+            <mat-label>Rechercher un log...</mat-label>
+            <input matInput (keyup)="applyFilter($event)">
+        </mat-form-field>
+    </div>
 </div>
 
-<mat-card>
-    <table mat-table [dataSource]="logs" class="full-width-table">
+<mat-card class="table-container">
+    <div class="table-scroll">
+        <table mat-table [dataSource]="dataSource" matSort class="full-width-table">
 
-        <ng-container matColumnDef="actionDate">
-            <th mat-header-cell *matHeaderCellDef> Date </th>
-            <td mat-cell *matCellDef="let log"> {{ log.actionDate | date:'medium' }} </td>
-        </ng-container>
+            <ng-container matColumnDef="actionDate">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+                <td mat-cell *matCellDef="let log"> {{ log.actionDate | date:'medium' }} </td>
+            </ng-container>
 
-        <ng-container matColumnDef="tableName">
-            <th mat-header-cell *matHeaderCellDef> Table </th>
-            <td mat-cell *matCellDef="let log"> <strong>{{ log.tableName }}</strong> </td>
-        </ng-container>
+            <ng-container matColumnDef="tableName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Table </th>
+                <td mat-cell *matCellDef="let log"> <strong>{{ log.tableName }}</strong> </td>
+            </ng-container>
 
-        <ng-container matColumnDef="actionType">
-            <th mat-header-cell *matHeaderCellDef> Action </th>
-            <td mat-cell *matCellDef="let log">
-                <span class="badge" [ngClass]="log.actionType">{{ log.actionType }}</span>
-            </td>
-        </ng-container>
+            <ng-container matColumnDef="actionType">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Action </th>
+                <td mat-cell *matCellDef="let log">
+                    <span class="badge" [ngClass]="log.actionType">{{ log.actionType }}</span>
+                </td>
+            </ng-container>
 
-        <ng-container matColumnDef="username">
-            <th mat-header-cell *matHeaderCellDef> Utilisateur </th>
-            <td mat-cell *matCellDef="let log"> {{ log.username }} </td>
-        </ng-container>
+            <ng-container matColumnDef="username">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Utilisateur </th>
+                <td mat-cell *matCellDef="let log"> {{ log.username }} </td>
+            </ng-container>
 
-        <ng-container matColumnDef="details">
-            <th mat-header-cell *matHeaderCellDef> Détails (JSON) </th>
-            <td mat-cell *matCellDef="let log" class="json-cell" [title]="log.oldValue + ' => ' + log.newValue">
-                <div *ngIf="log.oldValue" class="json-old">Avant: {{ log.oldValue }}</div>
-                <div *ngIf="log.newValue" class="json-new">Après: {{ log.newValue }}</div>
-            </td>
-        </ng-container>
+            <ng-container matColumnDef="details">
+                <th mat-header-cell *matHeaderCellDef> Détails (JSON) </th>
+                <td mat-cell *matCellDef="let log" class="json-cell" [title]="log.oldValue + ' => ' + log.newValue">
+                    <div *ngIf="log.oldValue" class="json-old">Avant: {{ log.oldValue }}</div>
+                    <div *ngIf="log.newValue" class="json-new">Après: {{ log.newValue }}</div>
+                </td>
+            </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <ng-container matColumnDef="revert">
+                <th mat-header-cell *matHeaderCellDef> Revert </th>
+                <td mat-cell *matCellDef="let log">
+                    <button mat-icon-button disabled title="Bouton Revert désactivé temporairement (Ajustement CDL)">
+                        <mat-icon style="color: grey;">undo</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
 
-        <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="5" style="text-align: center; padding: 24px;">
-                <span *ngIf="loading">Chargement des logs...</span>
-                <span *ngIf="!loading">Aucun log d'audit disponible. Les opérations DML apparaîtront ici.</span>
-            </td>
-        </tr>
-    </table>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="6" style="text-align: center; padding: 24px;">
+                    <span *ngIf="loading">Chargement des logs...</span>
+                    <span *ngIf="!loading">Aucun résultat trouvé pour votre recherche ou logs inexistants.</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="[10, 25, 100]" showFirstLastButtons></mat-paginator>
 </mat-card>

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 import { DynamicApiService } from '../../services/dynamic-api.service';
 import { ColumnDefinition, TableDefinition } from '../../models/dynamic.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -18,7 +19,16 @@ export class SchemaManagerComponent {
 
     typeOptions = ['NUMBER', 'VARCHAR2(255)', 'VARCHAR2(500)', 'DATE', 'TIMESTAMP'];
 
-    constructor(private api: DynamicApiService, private snackBar: MatSnackBar, private router: Router) { }
+    constructor(
+        private api: DynamicApiService,
+        private snackBar: MatSnackBar,
+        private router: Router,
+        private location: Location
+    ) { }
+
+    goBack(): void {
+        this.location.back();
+    }
 
     addColumn() {
         this.columns.push({ name: '', type: 'VARCHAR2(255)', primaryKey: false });

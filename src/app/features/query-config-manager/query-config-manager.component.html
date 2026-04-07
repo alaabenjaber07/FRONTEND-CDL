@@ -1,0 +1,81 @@
+<div class="config-container">
+    <div class="header-section">
+        <div
+            style="display: flex; align-items: center; justify-content: center; gap: 15px; width: 100%; position: relative;">
+            <button mat-icon-button (click)="goBack()" title="Retour" style="position: absolute; left: 0;">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+            <h2 style="margin: 0;">Gestion des Requêtes Paramétrables</h2>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 1rem;">
+            <p style="margin: 0; color: #64748b;">Configurez les requêtes SQL d'exécution et d'extraction pour les
+                utilisateurs.</p>
+            <button mat-stroked-button (click)="resetToDefault()" color="warn"
+                title="Réinitialiser le processus par défaut">
+                <mat-icon>restore</mat-icon> Réinitialiser Simulation par Défaut
+            </button>
+        </div>
+    </div>
+
+    <mat-card *ngIf="loading" class="loading-card">
+        <mat-spinner diameter="40"></mat-spinner>
+        <span>Chargement des configurations...</span>
+    </mat-card>
+
+    <div class="configs-grid" *ngIf="!loading">
+        <mat-card *ngFor="let config of configs" class="config-card">
+            <mat-card-header>
+                <div mat-card-avatar class="config-icon">
+                    <mat-icon>settings_applications</mat-icon>
+                </div>
+                <mat-card-title>{{ config.configName }}</mat-card-title>
+                <mat-card-subtitle>ID: {{ config.id }}</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+                <div *ngIf="editingId !== config.id">
+                    <div class="query-preview">
+                        <strong>Requête d'exécution :</strong>
+                        <code>{{ config.executionQuery | slice:0:100 }}...</code>
+                    </div>
+                    <div class="query-preview">
+                        <strong>Requête d'extraction :</strong>
+                        <code>{{ config.extractionQuery | slice:0:100 }}...</code>
+                    </div>
+                    <div class="trace-info" *ngIf="config.executedBy">
+                        <small>Dernière exécution : {{ config.executedBy }} ({{ config.lastExecutedAt | date:'short'
+                            }})</small>
+                    </div>
+                </div>
+
+                <div *ngIf="editingId === config.id" class="edit-form">
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Nom Config</mat-label>
+                        <input matInput [(ngModel)]="editModel.configName">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Requête d'exécution (SQL)</mat-label>
+                        <textarea matInput [(ngModel)]="editModel.executionQuery" rows="5"></textarea>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Requête d'extraction (Excel)</mat-label>
+                        <textarea matInput [(ngModel)]="editModel.extractionQuery" rows="3"></textarea>
+                    </mat-form-field>
+                </div>
+            </mat-card-content>
+
+            <mat-card-actions align="end">
+                <div *ngIf="editingId !== config.id">
+                    <button mat-button color="primary" (click)="startEdit(config)">Modifier</button>
+                    <button mat-button color="warn" (click)="deleteConfig(config.id)">Supprimer</button>
+                </div>
+                <div *ngIf="editingId === config.id">
+                    <button mat-button (click)="cancelEdit()">Annuler</button>
+                    <button mat-raised-button color="primary" (click)="saveEdit()">Enregistrer</button>
+                </div>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+</div>

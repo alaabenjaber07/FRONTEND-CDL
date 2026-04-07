@@ -1,0 +1,153 @@
+.elite-login-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at top left, var(--brand-orange) 0%, var(--primary-brand) 100%);
+    z-index: 2000;
+    /* Ensure it covers everything */
+}
+
+.login-glass-card {
+    width: 440px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
+    padding: 3rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    color: white;
+}
+
+.brand-area {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.login-logo-container {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+}
+
+.login-logo-img {
+    max-height: 80px;
+    max-width: 80px;
+    width: auto;
+    object-fit: contain;
+}
+
+.brand-icon {
+    font-size: 56px;
+    width: 56px;
+    height: 56px;
+    color: var(--primary-brand);
+    margin-bottom: 1rem;
+}
+
+.brand-area h1 {
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: -2px;
+    font-size: 2.5rem;
+    color: white;
+}
+
+.brand-area p {
+    color: var(--accent-gold);
+    margin: 5px 0 0;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.nexus-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.full-width-nexus {
+    width: 100%;
+}
+
+::ng-deep .full-width-nexus .mat-mdc-text-field-wrapper {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+::ng-deep .full-width-nexus .mat-mdc-form-field-label {
+    color: #94a3b8 !important;
+}
+
+::ng-deep .full-width-nexus input {
+    color: white !important;
+}
+
+.login-btn-premium {
+    height: 56px !important;
+    border-radius: 12px !important;
+    font-size: 1rem !important;
+    font-weight: 800 !important;
+    background: #ff5722 !important;
+    color: white !important;
+    margin-top: 1rem;
+    box-shadow: 0 10px 20px -5px rgba(255, 87, 34, 0.5) !important;
+}
+
+.premium-error-banner {
+    background: rgba(244, 63, 94, 0.1);
+    border: 1px solid rgba(244, 63, 94, 0.2);
+    color: #fb7185;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
+
+.footer-legal {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 0.7rem;
+    color: #475569;
+}

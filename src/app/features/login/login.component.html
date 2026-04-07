@@ -1,0 +1,41 @@
+<div class="elite-login-wrapper">
+    <div class="login-glass-card">
+        <div class="brand-area">
+            <div class="login-logo-container">
+                <img *ngIf="!logoError" src="assets/attijari-logo.png" alt="Attijari Bank" class="login-logo-img"
+                    (error)="handleLogoError()">
+                <mat-icon *ngIf="logoError" class="brand-icon">account_balance</mat-icon>
+            </div>
+            <h1>CDL Ajustement</h1>
+        </div>
+
+        <div class="login-form-area">
+            <div *ngIf="error" class="premium-error-banner">
+                <mat-icon>error_outline</mat-icon> {{ error }}
+            </div>
+
+            <form (ngSubmit)="login()" class="nexus-form">
+                <mat-form-field appearance="outline" class="full-width-nexus">
+                    <mat-label>Identifiant</mat-label>
+                    <input matInput [(ngModel)]="credentials.username" name="username" required
+                        placeholder="Ex. admin_01">
+                    <mat-icon matSuffix>person_outline</mat-icon>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="full-width-nexus">
+                    <mat-label>Mot de passe</mat-label>
+                    <input matInput type="password" [(ngModel)]="credentials.password" name="password" required>
+                    <mat-icon matSuffix>lock_open</mat-icon>
+                </mat-form-field>
+
+                <button mat-raised-button color="primary" class="login-btn-premium" type="submit">
+                    ACCÉDER AU PORTAIL <mat-icon>login</mat-icon>
+                </button>
+            </form>
+        </div>
+
+        <div class="footer-legal">
+            Système d'Audit et Ajustement Sécurisé &copy; 2026 CDL Equipe Etude ABJ
+        </div>
+    </div>
+</div>
