@@ -50,11 +50,16 @@
                         <!-- Main Play Button Area -->
                         <div class="play-zone" *ngIf="!passwordPromptVisible && !isEditingSql">
                             <button class="pulse-button compact" (click)="startExecution()"
-                                [disabled]="isExecuting || (progress > 0 && progress < 100)">
+                                [disabled]="isExecuting && progress < 100">
                                 <mat-icon *ngIf="!isExecuting">play_arrow</mat-icon>
                                 <mat-spinner *ngIf="isExecuting" diameter="30" color="accent"></mat-spinner>
                             </button>
                             <h3 [class.active-text]="isExecuting">{{ statusMessage || 'Prêt à lancer' }}</h3>
+
+                            <button mat-flat-button color="accent" *ngIf="isExecuting" (click)="goToMonitoring()"
+                                class="go-monitor-btn">
+                                <mat-icon>visibility</mat-icon> VOIR LA PROGRESSION
+                            </button>
                         </div>
 
                         <!-- Password Prompt Area -->
@@ -76,25 +81,10 @@
                             </div>
                         </div>
 
-                        <div class="progress-container-premium"
-                            *ngIf="(isExecuting || isCompleted) && !passwordPromptVisible">
-                            <div class="progress-stats">
-                                <span class="label">Progression du traitement</span>
-                                <span class="value">{{ progress }}%</span>
-                            </div>
-                            <div class="modern-progress-bar">
-                                <div class="fill" [style.width.%]="progress"></div>
-                            </div>
-
-                            <div class="current-step-indicator" *ngIf="isExecuting && currentStepMessage">
-                                <mat-icon class="spin-icon">settings</mat-icon>
-                                <span>{{ currentStepMessage }}</span>
-                            </div>
-                        </div>
-
-                        <div class="info-footer" *ngIf="isExecuting">
-                            <mat-icon>hourglass_empty</mat-icon>
-                            <span>Temps estimé restant : ~{{ (100 - progress) * 1.2 | number:'1.0-0' }}s</span>
+                        <div class="active-status-message" *ngIf="isExecuting">
+                            <mat-icon class="spin-icon">autorenew</mat-icon>
+                            <span>Un traitement est en cours. Consultez l'onglet <strong>MONITORING</strong> pour voir
+                                la progression.</span>
                         </div>
 
                         <div class="info-footer" *ngIf="lastExecutedBy && !isExecuting && !passwordPromptVisible">

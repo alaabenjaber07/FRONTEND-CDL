@@ -31,6 +31,7 @@ import { AuditViewComponent } from './features/audit-view/audit-view.component';
 import { LoginComponent } from './features/login/login.component';
 import { QueryExecutorComponent } from './features/query-executor/query-executor.component';
 import { QueryConfigManagerComponent } from './features/query-config-manager/query-config-manager.component';
+import { ExecutionMonitorComponent } from './features/execution-monitor/execution-monitor.component';
 
 // Security
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -44,7 +45,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     AuditViewComponent,
     LoginComponent,
     QueryExecutorComponent,
-    QueryConfigManagerComponent
+    QueryConfigManagerComponent,
+    ExecutionMonitorComponent
   ],
   imports: [
     BrowserModule,

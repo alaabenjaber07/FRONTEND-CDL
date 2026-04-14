@@ -15,7 +15,10 @@
         <mat-icon>dashboard</mat-icon> DASHBOARD
       </button>
       <button mat-button routerLink="/query-executor" routerLinkActive="active" class="nav-item">
-        <mat-icon>bolt</mat-icon> EXÉCUTION CDL
+        <mat-icon>bolt</mat-icon> LANCEMENT CDL
+      </button>
+      <button mat-button routerLink="/monitoring" routerLinkActive="active" class="nav-item">
+        <mat-icon>assessment</mat-icon> MONITORING
       </button>
 
       <ng-container *ngIf="authService.isAdmin()">
@@ -29,6 +32,16 @@
           <mat-icon>add_box</mat-icon> TABLES
         </button>
       </ng-container>
+    </div>
+
+    <div class="mini-progress-zone" *ngIf="executionState?.isExecuting" routerLink="/monitoring"
+      title="Traitement CDL en cours">
+      <div class="mini-stats">
+        <span class="mini-label">CDL : {{ executionState?.progress }}%</span>
+      </div>
+      <div class="mini-progress-track">
+        <div class="mini-progress-fill" [style.width.%]="executionState?.progress"></div>
+      </div>
     </div>
 
     <span class="spacer"></span>

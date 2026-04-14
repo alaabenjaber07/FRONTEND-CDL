@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { QueryExecutorService } from '../../services/query-executor.service';
 import { interval, Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 import { switchMap, takeWhile } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -39,7 +40,8 @@ export class QueryExecutorComponent implements OnInit, OnDestroy {
         private queryService: QueryExecutorService,
         private location: Location,
         public authService: AuthService,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private router: Router
     ) { }
 
     ngOnInit(): void {
@@ -47,6 +49,16 @@ export class QueryExecutorComponent implements OnInit, OnDestroy {
         if (this.authService.isAdmin()) {
             this.loadExecutionLogs();
         }
+
+        // Sync with global state
+        this.queryService.executionState$.subscribe(state => {
+            this.isExecuting = state.isExecuting;
+            this.progress = state.progress;
+            this.currentStepMessage = state.message;
+            if (state.progress === 100 && !state.isExecuting) {
+                this.isCompleted = true;
+            }
+        });
     }
 
     loadExecutionLogs() {
@@ -130,50 +142,24 @@ export class QueryExecutorComponent implements OnInit, OnDestroy {
 
     private proceedWithExecution() {
         const configName = 'default_process';
-        this.isExecuting = true;
-        this.isCompleted = false;
-        this.progress = 0;
-        this.statusMessage = 'Exécution en cours...';
+        this.statusMessage = 'Démarrage du traitement...';
 
         this.queryService.executeQuery(configName).subscribe({
             next: () => {
-                this.trackProgress();
+                this.snackBar.open('Traitement lancé avec succès !', 'Fermer', { duration: 3000 });
+                this.router.navigate(['/monitoring']);
             },
             error: (err) => {
                 console.error('Execution error', err);
                 this.statusMessage = 'Erreur lors de l\'exécution.';
                 this.isExecuting = false;
+                this.snackBar.open('Échec du lancement.', 'Fermer', { duration: 3000 });
             }
         });
     }
 
-    trackProgress() {
-        this.progressSubscription = interval(1500).pipe(
-            switchMap(() => this.queryService.getProgress()),
-            takeWhile(res => (res.count ?? 0) < (res.total ?? this.totalLines), true)
-        ).subscribe({
-            next: (res) => {
-                const total = res.total ?? this.totalLines; // backend sends total=440
-                const count = res.count ?? 0;
-
-                // Prefer backend progress if present, fallback to local calculation
-                this.progress = Math.min(
-                    Math.round(res.progress ?? ((count / total) * 100)),
-                    100
-                );
-
-                if (res.message && res.message !== 'NULL' && res.message !== 'Initialisation...') {
-                    this.currentStepMessage = res.message;
-                }
-
-                if (count >= total) {
-                    this.onExecutionComplete();
-                }
-            },
-            error: (err) => {
-                console.error('Progress error', err);
-            }
-        });
+    goToMonitoring() {
+        this.router.navigate(['/monitoring']);
     }
 
     onExecutionComplete() {

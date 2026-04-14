@@ -7,6 +7,7 @@ import { AuditViewComponent } from './features/audit-view/audit-view.component';
 import { LoginComponent } from './features/login/login.component';
 import { QueryExecutorComponent } from './features/query-executor/query-executor.component';
 import { QueryConfigManagerComponent } from './features/query-config-manager/query-config-manager.component';
+import { ExecutionMonitorComponent } from './features/execution-monitor/execution-monitor.component';
 import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'audit', component: AuditViewComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
   { path: 'query-executor', component: QueryExecutorComponent, canActivate: [AuthGuard] },
   { path: 'query-config-manager', component: QueryConfigManagerComponent, canActivate: [AuthGuard], data: { roles: ['ADMIN'] } },
+  { path: 'monitoring', component: ExecutionMonitorComponent, canActivate: [AuthGuard] },
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: '/dashboard' }
 ];
