@@ -32,6 +32,7 @@ import { LoginComponent } from './features/login/login.component';
 import { QueryExecutorComponent } from './features/query-executor/query-executor.component';
 import { QueryConfigManagerComponent } from './features/query-config-manager/query-config-manager.component';
 import { ExecutionMonitorComponent } from './features/execution-monitor/execution-monitor.component';
+import { UserManagementComponent } from './features/user-management/user-management.component';
 
 // Security
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -46,7 +47,8 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     LoginComponent,
     QueryExecutorComponent,
     QueryConfigManagerComponent,
-    ExecutionMonitorComponent
+    ExecutionMonitorComponent,
+    UserManagementComponent
   ],
   imports: [
     BrowserModule,

@@ -202,4 +202,29 @@ export class QueryExecutorComponent implements OnInit, OnDestroy {
         }
     }
 
+    downloadHistory(id: number) {
+        this.snackBar.open('Téléchargement en cours...', 'Fermer', { duration: 2000 });
+        this.queryService.downloadLogByIdBlob(id).subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+
+                // On cherche le log dans l'historique pour avoir les infos de nommage
+                const log = this.extractionLogs.find(l => l.id === id);
+                const filename = log ? `${log.configName}_ext_${log.extractionIndex}.csv` : `extraction_historique_${id}.csv`;
+
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            },
+            error: (err) => {
+                console.error('Download error', err);
+                this.snackBar.open('Erreur lors du téléchargement.', 'Fermer', { duration: 3000 });
+            }
+        });
+    }
+
 }

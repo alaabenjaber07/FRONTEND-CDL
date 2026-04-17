@@ -180,4 +180,10 @@ export class QueryExecutorService {
     resetDefaultConfig(): Observable<any> {
         return this.http.post(`${this.apiUrl}/reset-default`, {});
     }
+
+    downloadLogByIdBlob(id: number): Observable<Blob> {
+        return this.http.get(`${this.apiUrl}/download-log/${id}`, {
+            responseType: 'blob'
+        });
+    }
 }

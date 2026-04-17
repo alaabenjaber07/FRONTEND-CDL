@@ -31,6 +31,10 @@
         <button mat-button routerLink="/schema-manager" routerLinkActive="active" class="nav-item">
           <mat-icon>add_box</mat-icon> TABLES
         </button>
+        <button mat-button *ngIf="authService.isSuperAdmin()" routerLink="/user-management" routerLinkActive="active"
+          class="nav-item admin-pulse">
+          <mat-icon>manage_accounts</mat-icon> UTILISATEURS
+        </button>
       </ng-container>
     </div>
 
@@ -53,7 +57,7 @@
         <!-- Affichage du rôle seulement s'il est différent du nom d'utilisateur -->
         <span class="role-tag"
           *ngIf="authService.getCurrentUser()?.username.toLowerCase() !== (authService.isAdmin() ? 'admin' : 'user')">
-          {{ authService.isAdmin() ? 'ADMIN' : 'USER' }}
+          {{ authService.isSuperAdmin() ? 'SUPER ADMIN' : (authService.isAdmin() ? 'ADMIN' : 'USER') }}
         </span>
       </div>
       <button mat-icon-button (click)="logout()" title="Déconnexion" class="logout-btn">
