@@ -16,12 +16,16 @@ export class QueryExecutorComponent implements OnInit, OnDestroy {
     progress = 0;
     isExecuting = false;
     isCompleted = false;
-    totalLines = 440;
     statusMessage = 'Prêt pour le lancement';
     currentStepMessage = '';
     lastExecutedBy = '';
     lastExecutedAt: string | null = null;
     executionLogs: any[] = [];
+    extractionLogs: any[] = [];
+
+    // Dynamic Config
+    configs: any[] = [];
+    selectedConfigName: string = '';
 
     // SQL Editing
     isEditingSql = false;
@@ -45,9 +49,11 @@ export class QueryExecutorComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
+        this.queryService.checkInitialState();
         this.loadConfigDetails();
         if (this.authService.isAdmin()) {
             this.loadExecutionLogs();
+            this.loadExtractionLogs();
         }
 
         // Sync with global state
@@ -67,17 +73,36 @@ export class QueryExecutorComponent implements OnInit, OnDestroy {
         });
     }
 
+    loadExtractionLogs() {
+        this.queryService.getExtractionLogs().subscribe(logs => {
+            this.extractionLogs = logs;
+        });
+    }
+
     loadConfigDetails() {
         this.queryService.getAllConfigs().subscribe(configs => {
-            const config = configs.find(c => c.configName === 'default_process');
-            if (config) {
-                this.lastExecutedBy = config.executedBy || 'Jamais';
-                this.lastExecutedAt = config.lastExecutedAt;
-                this.currentSql = config.executionQuery;
-                this.configId = config.id;
-                this.fullConfig = config;
+            this.configs = configs;
+            if (configs.length > 0) {
+                // If not already active, select the first one
+                if (!this.selectedConfigName) {
+                    this.selectedConfigName = configs[0].configName;
+                }
+
+                const config = configs.find(c => c.configName === this.selectedConfigName);
+                if (config) {
+                    this.lastExecutedBy = config.executedBy || 'Jamais';
+                    this.lastExecutedAt = config.lastExecutedAt;
+                    this.currentSql = config.executionQuery;
+                    this.configId = config.id;
+                    this.fullConfig = config;
+                }
             }
         });
+    }
+
+    onConfigSelected(configName: string) {
+        this.selectedConfigName = configName;
+        this.loadConfigDetails();
     }
 
     toggleEditSql() {
@@ -141,7 +166,7 @@ export class QueryExecutorComponent implements OnInit, OnDestroy {
     }
 
     private proceedWithExecution() {
-        const configName = 'default_process';
+        const configName = this.selectedConfigName;
         this.statusMessage = 'Démarrage du traitement...';
 
         this.queryService.executeQuery(configName).subscribe({
@@ -173,25 +198,8 @@ export class QueryExecutorComponent implements OnInit, OnDestroy {
         this.loadConfigDetails();
         if (this.authService.isAdmin()) {
             this.loadExecutionLogs();
+            this.loadExtractionLogs();
         }
     }
 
-    extractExcel() {
-        const configName = 'default_process';
-        this.queryService.extractExcel(configName).subscribe({
-            next: (blob) => {
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${configName}_extraction.xlsx`;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-            },
-            error: (err) => {
-                console.error('Extraction error', err);
-            }
-        });
-    }
 }

@@ -26,18 +26,32 @@ export class QueryExecutorService {
         this.checkInitialState();
     }
 
-    private checkInitialState() {
-        this.getProgress('default_process').subscribe(res => {
-            if (res.progress > 0 && res.progress < 100) {
-                this.updateState({
-                    isExecuting: true,
-                    progress: res.progress,
-                    message: res.message,
-                    count: res.count,
-                    total: res.total,
-                    configName: 'default_process'
+    public checkInitialState() {
+        this.getAllConfigs().subscribe(configs => {
+            // Check each config to see if it's currently running
+            for (const config of configs) {
+                this.getProgress(config.configName).subscribe(res => {
+                    if (res.progress > 0 && res.progress < 100) {
+                        this.updateState({
+                            isExecuting: true,
+                            progress: res.progress,
+                            message: res.message,
+                            count: res.count,
+                            total: res.total,
+                            configName: config.configName
+                        });
+                        this.startPolling(config.configName);
+                    } else if (res.status === 'SUCCESS') {
+                        this.updateState({
+                            isExecuting: false,
+                            progress: 100,
+                            message: res.message,
+                            count: res.total,
+                            total: res.total,
+                            configName: config.configName
+                        });
+                    }
                 });
-                this.startPolling('default_process');
             }
         });
     }
@@ -117,10 +131,26 @@ export class QueryExecutorService {
         });
     }
 
-    extractExcel(configName: string): Observable<Blob> {
-        return this.http.get(`${this.apiUrl}/extract/${configName}`, {
+    startExtraction(configName: string, index: number = 1): Observable<void> {
+        return this.http.post<void>(`${this.apiUrl}/start-extraction/${configName}/${index}`, {});
+    }
+
+    getExtractionStatus(configName: string, index: number = 1): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/extraction-status/${configName}/${index}`);
+    }
+
+    cancelExtraction(configName: string, index: number = 1): Observable<any> {
+        return this.http.post<any>(`${this.apiUrl}/cancel-extraction/${configName}/${index}`, {});
+    }
+
+    downloadExtractionBlob(configName: string, index: number = 1): Observable<Blob> {
+        return this.http.get(`${this.apiUrl}/download-extraction/${configName}/${index}`, {
             responseType: 'blob'
         });
+    }
+
+    getExtractionDownloadUrl(configName: string, index: number = 1): string {
+        return `${this.apiUrl}/download-extraction/${configName}/${index}`;
     }
 
     getAllConfigs(): Observable<any[]> {
@@ -141,6 +171,10 @@ export class QueryExecutorService {
 
     getExecutionLogs(): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiUrl}/logs`);
+    }
+
+    getExtractionLogs(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/extraction-logs`);
     }
 
     resetDefaultConfig(): Observable<any> {

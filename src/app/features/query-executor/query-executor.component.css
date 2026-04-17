@@ -392,6 +392,60 @@
     color: #854d0e;
 }
 
+.header-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.action-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.config-selector {
+    width: 280px;
+    margin-bottom: -1.25em;
+}
+
+::ng-deep .config-selector .mat-form-field-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+::ng-deep .config-selector .mat-form-field-flex {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-radius: 8px 8px 0 0 !important;
+    padding-top: 0.5em !important;
+}
+
+::ng-deep .config-selector .mat-select-value-text {
+    color: var(--primary-brand) !important;
+    font-weight: 700 !important;
+    font-size: 1.05rem;
+    letter-spacing: 0.5px;
+}
+
+::ng-deep .config-selector .mat-form-field-label {
+    color: #64748b !important;
+    font-weight: 600 !important;
+}
+
+::ng-deep .config-selector .mat-form-field-outline {
+    color: rgba(0, 0, 0, 0.1) !important;
+}
+
+::ng-deep .config-selector .mat-select-arrow {
+    color: var(--primary-brand) !important;
+}
+
+.config-selector:hover {
+    filter: brightness(1.05);
+}
+
 .badge-error {
     background: #fee2e2;
     color: #991b1b;
@@ -410,6 +464,25 @@ th.mat-header-cell {
     font-weight: 700;
     text-transform: uppercase;
     font-size: 0.75rem;
+}
+
+.user-config-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(59, 130, 246, 0.05);
+    padding: 8px 16px;
+    border-radius: 8px;
+    color: #1e293b;
+    font-size: 0.9rem;
+    border: 1px dashed rgba(59, 130, 246, 0.2);
+}
+
+.user-config-info mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--primary-brand);
 }
 
 td.mat-cell {

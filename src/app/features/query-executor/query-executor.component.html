@@ -18,15 +18,40 @@
             <!-- Execution Card Centered -->
             <div class="card-center-wrapper">
                 <mat-card class="execution-card shadow-premium">
-                    <mat-card-header>
-                        <mat-card-title>Lanceur de Traitement CDL</mat-card-title>
-                        <mat-card-subtitle>Configuration : default_process</mat-card-subtitle>
+                    <mat-card-header class="header-flex">
+                        <div class="title-group">
+                            <mat-card-title>Lanceur de Traitement CDL</mat-card-title>
+                            <mat-card-subtitle>Configuration : <strong>{{ selectedConfigName
+                                    }}</strong></mat-card-subtitle>
+                        </div>
+
                         <span class="spacer"></span>
-                        <button mat-stroked-button color="primary" *ngIf="authService.isAdmin() && !isExecuting"
-                            (click)="toggleEditSql()" class="edit-sql-btn">
-                            <mat-icon>{{ isEditingSql ? 'visibility' : 'code' }}</mat-icon>
-                            {{ isEditingSql ? 'VOIR LANCEUR' : 'MODIFIER SQL' }}
-                        </button>
+
+                        <div class="action-group">
+                            <!-- Admin can change config -->
+                            <mat-form-field appearance="outline" class="config-selector"
+                                *ngIf="authService.isAdmin() && !isExecuting">
+                                <mat-label>Changer Config</mat-label>
+                                <mat-select [(ngModel)]="selectedConfigName"
+                                    (selectionChange)="onConfigSelected($event.value)">
+                                    <mat-option *ngFor="let cfg of configs" [value]="cfg.configName">
+                                        {{ cfg.configName }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <!-- User only sees the selected name (already in subtitle, but can add a badge here) -->
+                            <div class="user-config-info" *ngIf="!authService.isAdmin()">
+                                <mat-icon>settings_suggest</mat-icon>
+                                <span>Traitement actif : <strong>{{ selectedConfigName }}</strong></span>
+                            </div>
+
+                            <button mat-stroked-button color="primary" *ngIf="authService.isAdmin() && !isExecuting"
+                                (click)="toggleEditSql()" class="edit-sql-btn">
+                                <mat-icon>{{ isEditingSql ? 'visibility' : 'code' }}</mat-icon>
+                                {{ isEditingSql ? 'VOIR LANCEUR' : 'MODIFIER' }}
+                            </button>
+                        </div>
                     </mat-card-header>
 
                     <mat-card-content class="centered-content">
@@ -94,22 +119,18 @@
                         </div>
                     </mat-card-content>
 
-                    <mat-card-actions class="actions-centered" *ngIf="isCompleted && !passwordPromptVisible">
-                        <button mat-raised-button color="accent" class="extract-btn" (click)="extractExcel()">
-                            <mat-icon>cloud_download</mat-icon> EXTRAIRE EN EXCEL
-                        </button>
-                    </mat-card-actions>
+
                 </mat-card>
             </div>
-
             <!-- Admin Logs Table -->
             <div class="logs-section" *ngIf="authService.isAdmin()">
-                <div class="section-title">
-                    <mat-icon>assignment</mat-icon>
-                    <h3>Historique Complet des Exécutions CDL</h3>
-                </div>
 
+                <!-- Execution Logs Table -->
                 <div class="table-wrapper shadow-premium">
+                    <div class="section-title">
+                        <mat-icon>assignment</mat-icon>
+                        <h3>Historique Complet des Exécutions CDL</h3>
+                    </div>
                     <table mat-table [dataSource]="executionLogs" class="full-width-table">
                         <ng-container matColumnDef="date">
                             <th mat-header-cell *matHeaderCellDef>Date</th>
@@ -136,6 +157,43 @@
 
                     <div class="empty-state" *ngIf="executionLogs.length === 0">
                         Aucun historique disponible.
+                    </div>
+                </div>
+
+                <div class="table-wrapper shadow-premium" style="margin-top: 2rem;">
+                    <div class="section-title">
+                        <mat-icon>file_download</mat-icon>
+                        <h3>Audit des Extractions CDL</h3>
+                    </div>
+                    <table mat-table [dataSource]="extractionLogs" class="full-width-table">
+                        <ng-container matColumnDef="date">
+                            <th mat-header-cell *matHeaderCellDef>Date</th>
+                            <td mat-cell *matCellDef="let element">{{ element.extractionDate | date:'short' }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="user">
+                            <th mat-header-cell *matHeaderCellDef>Utilisateur</th>
+                            <td mat-cell *matCellDef="let element">{{ element.extractedBy }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="configName">
+                            <th mat-header-cell *matHeaderCellDef>Configuration</th>
+                            <td mat-cell *matCellDef="let element">{{ element.configName }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="queryIndex">
+                            <th mat-header-cell *matHeaderCellDef>Type</th>
+                            <td mat-cell *matCellDef="let element">
+                                <span class="badge" [class.badge-success]="element.extractionIndex === 1"
+                                    [class.badge-primary]="element.extractionIndex === 2">
+                                    {{ element.extractionIndex === 1 ? 'Données (CDL)' : 'Logs (Tech)' }}
+                                </span>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="['date', 'user', 'configName', 'queryIndex']"></tr>
+                        <tr mat-row *matRowDef="let row; columns: ['date', 'user', 'configName', 'queryIndex']"></tr>
+                    </table>
+
+                    <div class="empty-state" *ngIf="extractionLogs.length === 0">
+                        Aucun historique d'extraction disponible.
                     </div>
                 </div>
             </div>

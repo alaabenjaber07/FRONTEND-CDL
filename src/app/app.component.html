@@ -40,7 +40,7 @@
         <span class="mini-label">CDL : {{ executionState?.progress }}%</span>
       </div>
       <div class="mini-progress-track">
-        <div class="mini-progress-fill" [style.width.%]="executionState?.progress"></div>
+        <div class="mini-progress-fill shimmer" [style.width.%]="executionState?.progress"></div>
       </div>
     </div>
 
@@ -50,7 +50,11 @@
       <mat-icon>account_circle</mat-icon>
       <div class="user-info-text">
         <span class="username-label">{{ authService.getCurrentUser()?.username }}</span>
-        <span class="role-tag">{{ authService.isAdmin() ? 'ADMIN' : 'USER' }}</span>
+        <!-- Affichage du rôle seulement s'il est différent du nom d'utilisateur -->
+        <span class="role-tag"
+          *ngIf="authService.getCurrentUser()?.username.toLowerCase() !== (authService.isAdmin() ? 'admin' : 'user')">
+          {{ authService.isAdmin() ? 'ADMIN' : 'USER' }}
+        </span>
       </div>
       <button mat-icon-button (click)="logout()" title="Déconnexion" class="logout-btn">
         <mat-icon>logout</mat-icon>

@@ -39,8 +39,12 @@
                         <code>{{ config.executionQuery | slice:0:100 }}...</code>
                     </div>
                     <div class="query-preview">
-                        <strong>Requête d'extraction :</strong>
+                        <strong>Extraction 1 (Ajustement) :</strong>
                         <code>{{ config.extractionQuery | slice:0:100 }}...</code>
+                    </div>
+                    <div class="query-preview">
+                        <strong>Extraction 2 (Logs) :</strong>
+                        <code>{{ config.extractionQuery2 | slice:0:100 }}...</code>
                     </div>
                     <div class="trace-info" *ngIf="config.executedBy">
                         <small>Dernière exécution : {{ config.executedBy }} ({{ config.lastExecutedAt | date:'short'
@@ -60,8 +64,13 @@
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Requête d'extraction (Excel)</mat-label>
+                        <mat-label>Requête d'extraction 1 (Excel Ajustement)</mat-label>
                         <textarea matInput [(ngModel)]="editModel.extractionQuery" rows="3"></textarea>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Requête d'extraction 2 (Excel Logs)</mat-label>
+                        <textarea matInput [(ngModel)]="editModel.extractionQuery2" rows="3"></textarea>
                     </mat-form-field>
                 </div>
             </mat-card-content>

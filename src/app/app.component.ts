@@ -18,6 +18,7 @@ export class AppComponent {
     private router: Router,
     private queryService: QueryExecutorService
   ) {
+    this.queryService.checkInitialState();
     this.queryService.executionState$.subscribe(state => {
       this.executionState = state;
     });
