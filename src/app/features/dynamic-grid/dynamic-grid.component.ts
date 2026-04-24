@@ -181,17 +181,47 @@ export class DynamicGridComponent implements OnInit {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, { type: 'array' });
             const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-            const excelData = XLSX.utils.sheet_to_json(firstSheet);
+            const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 }) as any[][];
 
-            if (excelData && excelData.length > 0) {
-                if (confirm(`Importer ${excelData.length} lignes en base pour la lable Oracle ${this.tableName} ? (Les colonnes du fichier Excel doivent matcher le nom de la table)`)) {
-                    this.api.insertBulk(this.tableName, excelData).subscribe({
-                        next: () => {
-                            this.showSuccess('Importation Excel réussie en bulk : ' + excelData.length + ' lignes');
-                            this.loadTableData();
-                        },
-                        error: (err) => this.showError('Erreur import Bulk: ' + err.message)
-                    });
+            if (rows && rows.length > 0) {
+                const excelData: any[] = [];
+                let startIndex = 0;
+
+                // Vérifier si la première ligne contient des en-têtes (si la valeur matche un nom de colonne)
+                if (rows[0] && rows[0].length > 0) {
+                    const firstVal = String(rows[0][0]).toUpperCase();
+                    if (this.columns.some(c => c.name.toUpperCase() === firstVal)) {
+                        startIndex = 1; // Ignorer la ligne d'en-tête
+                    }
+                }
+
+                // Mapper les colonnes du tableau vers les colonnes BDD
+                for (let i = startIndex; i < rows.length; i++) {
+                    const rowArray = rows[i];
+                    if (!rowArray || rowArray.length === 0) continue;
+
+                    const rowData: any = {};
+                    for (let j = 0; j < Math.min(rowArray.length, this.columns.length); j++) {
+                        // associer la donnée Excel [j] au nom de la colonne de la BDD [j]
+                        rowData[this.columns[j].name] = rowArray[j];
+                    }
+                    if (Object.keys(rowData).length > 0) {
+                        excelData.push(rowData);
+                    }
+                }
+
+                if (excelData.length > 0) {
+                    if (confirm(`Importer ${excelData.length} lignes en base pour la table Oracle ${this.tableName} ?`)) {
+                        this.api.insertBulk(this.tableName, excelData).subscribe({
+                            next: () => {
+                                this.showSuccess('Importation Excel réussie en bulk : ' + excelData.length + ' lignes');
+                                this.loadTableData();
+                            },
+                            error: (err) => this.showError('Erreur import Bulk: ' + err.message)
+                        });
+                    }
+                } else {
+                    this.showError('Aucune donnée valide trouvée dans le fichier Excel.');
                 }
             } else {
                 this.showError('Le fichier Excel est vide ou invalide.');

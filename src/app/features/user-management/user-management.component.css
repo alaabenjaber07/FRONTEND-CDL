@@ -1,0 +1,55 @@
+.user-management-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    align-items: flex-start;
+}
+
+.form-card {
+    flex: 1 1 300px;
+    max-width: 400px;
+}
+
+.table-card {
+    flex: 2 1 600px;
+    overflow-x: auto;
+}
+
+.user-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.full-width-table {
+    width: 100%;
+}
+
+.role-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.8em;
+}
+
+.role-badge.user {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.role-badge.admin {
+    background-color: #1976d2;
+    color: white;
+}
+
+.role-badge.super_admin {
+    background-color: #d32f2f;
+    color: white;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}

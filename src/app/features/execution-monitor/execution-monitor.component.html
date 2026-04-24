@@ -1,0 +1,126 @@
+<div class="monitor-container">
+    <div class="glass-monitor shadow-premium">
+        <!-- Header with Brand Colors -->
+        <div class="monitor-header">
+            <div class="header-content">
+                <mat-icon class="status-icon" [class.spinning]="executionState?.isExecuting">
+                    {{ executionState?.isExecuting ? 'autorenew' : 'task_alt' }}
+                </mat-icon>
+                <div class="title-meta">
+                    <span class="eyebrow">Avancement CDL</span>
+                    <h2>{{ executionState?.isExecuting ? 'Traitement en cours' : 'Mission accomplie' }}</h2>
+                </div>
+            </div>
+            <div class="config-tag" *ngIf="executionState?.configName">
+                <mat-icon>settings_input_component</mat-icon>
+                {{ executionState.configName }}
+            </div>
+        </div>
+
+        <!-- Main Body -->
+        <div class="monitor-body">
+            <!-- Progress Arc/Line -->
+            <div class="progress-showcase">
+                <div class="progress-details">
+                    <div class="stat-item">
+                        <span class="stat-val">{{ executionState?.progress }}%</span>
+                        <span class="stat-label">AVANCEMENT GLOBAL</span>
+                    </div>
+                    <div class="stat-item end">
+                        <span class="stat-val">{{ executionState?.count || 0 }}</span>
+                        <span class="stat-label">LIGNES TRAITÉES / 440</span>
+                    </div>
+                </div>
+
+                <div class="premium-progress-track">
+                    <div class="premium-progress-fill" [style.width.%]="executionState?.progress">
+                        <div class="shimmer"></div>
+                    </div>
+                </div>
+
+                <div class="step-message">
+                    <mat-icon>info</mat-icon>
+                    <span>Dernière Étape executée : <strong>{{ executionState?.message || 'Récupération du statut...'
+                            }}</strong></span>
+                </div>
+            </div>
+
+            <!-- Cancel Prompt Overlay-like area -->
+            <div class="cancel-zone" *ngIf="showCancelPrompt">
+                <div class="cancel-card">
+                    <mat-icon color="warn">warning</mat-icon>
+                    <h4>Confirmation d'Annulation</h4>
+                    <p>Veuillez entrer le mot de passe administrateur pour stopper le CDL.</p>
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Mot de passe</mat-label>
+                        <input matInput type="password" [(ngModel)]="cancelPassword" (keyup.enter)="confirmCancel()">
+                        <mat-error *ngIf="cancelError">Mot de passe invalide</mat-error>
+                    </mat-form-field>
+                    <div class="cancel-btns">
+                        <button mat-button (click)="showCancelPrompt = false">CONSERVER</button>
+                        <button mat-raised-button color="warn" (click)="confirmCancel()">ANNULER LE CDL</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completion Extractions -->
+            <div class="extractions-area" *ngIf="!executionState?.isExecuting && executionState?.progress === 100">
+                <p>Le traitement est terminé. Vous pouvez maintenant extraire les données pour vérification.</p>
+                <div class="extract-buttons">
+                    <div class="extraction-group" style="display: flex; gap: 8px; align-items: center;">
+                        <button mat-raised-button class="btn-attijari" (click)="extractExcel(1)"
+                            [disabled]="isExtracting1 || isExtracting2">
+                            <mat-icon *ngIf="!isExtracting1 && !extractionReady1">download</mat-icon>
+                            <mat-icon *ngIf="isExtracting1" class="spin-icon">autorenew</mat-icon>
+                            <mat-icon *ngIf="extractionReady1">check_circle</mat-icon>
+
+                            <span *ngIf="!isExtracting1 && !extractionReady1">EXTRACTION 1 CDL</span>
+                            <span *ngIf="isExtracting1">
+                                GÉNÉRATION... {{extractionPercent1}}%
+                                <small>({{processedRows1}} lignes)</small>
+                            </span>
+                            <span *ngIf="extractionReady1">TÉLÉCHARGER CDL 1</span>
+                        </button>
+                        <button mat-icon-button color="warn" *ngIf="isExtracting1" (click)="cancelExtraction(1)"
+                            matTooltip="Annuler cette extraction">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </div>
+
+                    <div class="extraction-group" style="display: flex; gap: 8px; align-items: center;">
+                        <button mat-raised-button class="btn-attijari" (click)="extractExcel(2)"
+                            [disabled]="!extractionReady1 || isExtracting1 || isExtracting2"
+                            [class.opacity-50]="!extractionReady1">
+                            <mat-icon *ngIf="!isExtracting2 && !extractionReady2">analytics</mat-icon>
+                            <mat-icon *ngIf="isExtracting2" class="spin-icon">autorenew</mat-icon>
+                            <mat-icon *ngIf="extractionReady2">check_circle</mat-icon>
+
+                            <span *ngIf="!isExtracting2 && !extractionReady2">lancement TDB</span>
+                            <span *ngIf="isExtracting2">
+                                GÉNÉRATION... {{extractionPercent2}}%
+                                <small>({{processedRows2}} lignes)</small>
+                            </span>
+                            <span *ngIf="extractionReady2">TÉLÉCHARGER CDL 2</span>
+                        </button>
+                        <button mat-icon-button color="warn" *ngIf="isExtracting2" (click)="cancelExtraction(2)"
+                            matTooltip="Annuler cette extraction">
+                            <mat-icon>cancel</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="monitor-footer">
+            <button mat-stroked-button color="primary" (click)="goBack()">
+                <mat-icon>arrow_back</mat-icon> RETOUR AU TABLEAU DE BORD
+            </button>
+            <span class="spacer"></span>
+            <button mat-raised-button color="warn" *ngIf="executionState?.isExecuting && !showCancelPrompt"
+                (click)="promptCancel()">
+                <mat-icon>block</mat-icon> ANNULER LE TRAITEMENT
+            </button>
+        </div>
+    </div>
+</div>

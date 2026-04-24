@@ -1,0 +1,178 @@
+.monitor-container {
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.glass-monitor {
+    background: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 800px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.monitor-header {
+    background: #f4f4f4;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: #1976d2;
+}
+
+.title-meta {
+    flex-grow: 1;
+    margin-left: 15px;
+}
+
+.title-meta h2 {
+    margin: 0;
+    color: #333;
+}
+
+.eyebrow {
+    color: #666;
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+
+.config-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #e0e0e0;
+    padding: 4px 12px;
+    border-radius: 20px;
+    color: #333;
+}
+
+.monitor-body {
+    padding: 20px;
+}
+
+.progress-showcase {
+    margin-bottom: 20px;
+}
+
+.progress-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-item.end {
+    align-items: flex-end;
+}
+
+.stat-val {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #1976d2;
+}
+
+.stat-label {
+    font-size: 0.8em;
+    color: #666;
+}
+
+.premium-progress-track {
+    background: #e0e0e0;
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.premium-progress-fill {
+    background: #1976d2;
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.step-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #555;
+}
+
+.cancel-zone {
+    margin-top: 20px;
+    background: #fff3e0;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.cancel-card mat-icon {
+    vertical-align: middle;
+}
+
+.cancel-btns {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.extractions-area {
+    margin-top: 20px;
+    background: #f4f4f4;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.extract-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.btn-attijari {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.monitor-footer {
+    padding: 15px 20px;
+    display: flex;
+    background: #fafafa;
+    border-top: 1px solid #eee;
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+.spin-icon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.opacity-50 {
+    opacity: 0.5;
+}
+
+.spinning {
+    animation: spin 2s linear infinite;
+}
