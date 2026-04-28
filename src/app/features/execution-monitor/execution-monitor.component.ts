@@ -36,6 +36,37 @@ export class ExecutionMonitorComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.startPolling();
+        this.checkExistingExtractions();
+    }
+
+    checkExistingExtractions() {
+        const configName = localStorage.getItem('currentConfigName') || 'default_process';
+
+        // Check Extraction 1
+        this.queryService.getExtractionStatus(configName, 1).subscribe({
+            next: (log: any) => {
+                if (log && log.status === 'STARTED') {
+                    this.isExtracting1 = true;
+                    this.extractionReady1 = false;
+                    this.pollExtraction(configName, 1);
+                } else if (log && log.status === 'SUCCESS') {
+                    this.extractionReady1 = true;
+                }
+            }
+        });
+
+        // Check Extraction 2
+        this.queryService.getExtractionStatus(configName, 2).subscribe({
+            next: (log: any) => {
+                if (log && log.status === 'STARTED') {
+                    this.isExtracting2 = true;
+                    this.extractionReady2 = false;
+                    this.pollExtraction(configName, 2);
+                } else if (log && log.status === 'SUCCESS') {
+                    this.extractionReady2 = true;
+                }
+            }
+        });
     }
 
     ngOnDestroy() {
@@ -82,20 +113,20 @@ export class ExecutionMonitorComponent implements OnInit, OnDestroy {
     }
 
     confirmCancel() {
-        if (this.cancelPassword === 'ADMINCDL') { // Basic check as per requirements
-            const configName = localStorage.getItem('currentConfigName') || 'default_process';
-            this.queryService.cancelExecution(configName).subscribe({
-                next: () => {
-                    this.snackBar.open('Annulation envoyée au serveur', 'Fermer', { duration: 3000 });
-                    this.showCancelPrompt = false;
-                },
-                error: () => {
+        const configName = localStorage.getItem('currentConfigName') || 'default_process';
+        this.queryService.cancelExecutionSecure(configName, this.cancelPassword).subscribe({
+            next: () => {
+                this.snackBar.open('Annulation envoyée au serveur', 'Fermer', { duration: 3000 });
+                this.showCancelPrompt = false;
+            },
+            error: (err) => {
+                if (err.status === 401) {
+                    this.cancelError = true;
+                } else {
                     this.snackBar.open('Erreur lors de l\'annulation', 'Fermer', { duration: 3000 });
                 }
-            });
-        } else {
-            this.cancelError = true;
-        }
+            }
+        });
     }
 
     extractExcel(index: number) {

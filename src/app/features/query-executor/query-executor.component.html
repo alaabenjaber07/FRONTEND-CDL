@@ -20,8 +20,9 @@
                 <mat-card class="execution-card shadow-premium">
                     <mat-card-header class="header-flex">
                         <div class="title-group">
-                            <mat-card-title>Lanceur de Traitement CDL</mat-card-title>
-                            <mat-card-subtitle>Configuration : <strong>{{ selectedConfigName
+                            <mat-card-title>Lanceur Tableau des engagements</mat-card-title>
+                            <mat-card-subtitle>Configuration : <strong>{{ selectedConfigName === 'CDL_ajustement' ?
+                                    'Ajustement Classe' : selectedConfigName
                                     }}</strong></mat-card-subtitle>
                         </div>
 
@@ -43,7 +44,8 @@
                             <!-- User only sees the selected name (already in subtitle, but can add a badge here) -->
                             <div class="user-config-info" *ngIf="!authService.isAdmin()">
                                 <mat-icon>settings_suggest</mat-icon>
-                                <span>Traitement actif : <strong>{{ selectedConfigName }}</strong></span>
+                                <span>Traitement actif : <strong>{{ selectedConfigName === 'CDL_ajustement' ?
+                                        'Ajustement Classe' : selectedConfigName }}</strong></span>
                             </div>
 
                             <button mat-stroked-button color="primary" *ngIf="authService.isAdmin() && !isExecuting"
@@ -73,7 +75,7 @@
                         </div>
 
                         <!-- Main Play Button Area -->
-                        <div class="play-zone" *ngIf="!passwordPromptVisible && !isEditingSql">
+                        <div class="play-zone" *ngIf="!passwordPromptVisible && !isEditingSql && !cancelPromptVisible">
                             <button class="pulse-button compact" (click)="startExecution()"
                                 [disabled]="isExecuting && progress < 100">
                                 <mat-icon *ngIf="!isExecuting">play_arrow</mat-icon>
@@ -81,10 +83,16 @@
                             </button>
                             <h3 [class.active-text]="isExecuting">{{ statusMessage || 'Prêt à lancer' }}</h3>
 
-                            <button mat-flat-button color="accent" *ngIf="isExecuting" (click)="goToMonitoring()"
-                                class="go-monitor-btn">
-                                <mat-icon>visibility</mat-icon> VOIR LA PROGRESSION
-                            </button>
+                            <div class="execution-actions-group" *ngIf="isExecuting"
+                                style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                                <button mat-flat-button color="accent" (click)="goToMonitoring()"
+                                    class="go-monitor-btn">
+                                    <mat-icon>visibility</mat-icon> VOIR LA PROGRESSION
+                                </button>
+                                <button mat-raised-button color="warn" (click)="initiateCancellation()">
+                                    <mat-icon>cancel</mat-icon> ANNULER LE TRAITEMENT
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Password Prompt Area -->
@@ -103,6 +111,26 @@
                             <div class="prompt-actions">
                                 <button mat-button (click)="cancelExecution()">ANNULER</button>
                                 <button mat-raised-button color="primary" (click)="confirmExecution()">VALIDER</button>
+                            </div>
+                        </div>
+
+                        <!-- Cancellation Password Prompt Area -->
+                        <div class="password-prompt-zone" *ngIf="cancelPromptVisible">
+                            <mat-icon class="lock-icon" color="warn">warning</mat-icon>
+                            <h4>Annulation du Traitement En Cours</h4>
+                            <p>Entrez le mot de passe pour confirmer l'ANNULATION du traitement.</p>
+
+                            <mat-form-field appearance="outline" class="full-width">
+                                <mat-label>Mot de passe</mat-label>
+                                <input matInput type="password" [(ngModel)]="cancelPasswordInput"
+                                    (keyup.enter)="confirmCancelProcess()">
+                                <mat-error *ngIf="cancelPasswordError">Mot de passe incorrect</mat-error>
+                            </mat-form-field>
+
+                            <div class="prompt-actions">
+                                <button mat-button (click)="abortCancellation()">RETOUR</button>
+                                <button mat-raised-button color="warn" (click)="confirmCancelProcess()">CONFIRMER
+                                    ANNULATION</button>
                             </div>
                         </div>
 
@@ -130,7 +158,7 @@
                         <!-- ... (History table content) -->
                         <div class="section-title">
                             <mat-icon>assignment</mat-icon>
-                            <h3>Historique Complet des Exécutions CDL</h3>
+                            <h3>Historique Complet des Exécutions</h3>
                         </div>
                         <table mat-table [dataSource]="executionLogs" class="full-width-table">
                             <ng-container matColumnDef="date">
@@ -165,7 +193,7 @@
                     <div class="table-wrapper shadow-premium" style="margin-top: 2rem;">
                         <div class="section-title">
                             <mat-icon>file_download</mat-icon>
-                            <h3>Audit des Extractions CDL</h3>
+                            <h3>Audit des Extractions</h3>
                         </div>
                         <table mat-table [dataSource]="extractionLogs" class="full-width-table">
                             <ng-container matColumnDef="date">
@@ -186,7 +214,7 @@
                                 <td mat-cell *matCellDef="let element">
                                     <span class="badge" [class.badge-success]="element.extractionIndex === 1"
                                         [class.badge-primary]="element.extractionIndex === 2">
-                                        {{ element.extractionIndex === 1 ? 'EXTRACTION 1 CDL' : 'EXTRACTION 2 CDL' }}
+                                        {{ element.extractionIndex === 1 ? 'EXTRACTION 1' : 'EXTRACTION 2' }}
                                     </span>
                                 </td>
                             </ng-container>

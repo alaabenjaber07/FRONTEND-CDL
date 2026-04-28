@@ -33,10 +33,15 @@ export class QueryExecutorComponent implements OnInit, OnDestroy {
     configId: number | null = null;
     fullConfig: any = null;
 
-    // Security
+    // Security Start
     passwordPromptVisible = false;
     inputPassword = '';
     passwordError = false;
+
+    // Security Cancel
+    cancelPromptVisible = false;
+    cancelPasswordInput = '';
+    cancelPasswordError = false;
 
     private progressSubscription: Subscription | undefined;
 
@@ -185,6 +190,37 @@ export class QueryExecutorComponent implements OnInit, OnDestroy {
 
     goToMonitoring() {
         this.router.navigate(['/monitoring']);
+    }
+
+    initiateCancellation() {
+        this.cancelPromptVisible = true;
+        this.cancelPasswordInput = '';
+        this.cancelPasswordError = false;
+    }
+
+    abortCancellation() {
+        this.cancelPromptVisible = false;
+    }
+
+    confirmCancelProcess() {
+        const configName = this.selectedConfigName;
+        this.queryService.cancelExecutionSecure(configName, this.cancelPasswordInput).subscribe({
+            next: () => {
+                this.snackBar.open('Traitement annulé avec succès', 'Fermer', { duration: 3000 });
+                this.cancelPromptVisible = false;
+                this.isExecuting = false;
+                this.progress = 0;
+                this.statusMessage = 'Traitement annulé';
+                this.queryService.resetState();
+            },
+            error: (err) => {
+                if (err.status === 401) {
+                    this.cancelPasswordError = true;
+                } else {
+                    this.snackBar.open('Erreur lors de l\'annulation', 'Fermer', { duration: 3000 });
+                }
+            }
+        });
     }
 
     onExecutionComplete() {

@@ -99,7 +99,11 @@ export class DynamicGridComponent implements OnInit {
                     this.loadTableData();
                     this.cancelEdit();
                 },
-                error: (err) => this.showError('Erreur création ' + err.message)
+                error: (err) => {
+                    console.error('Erreur insertion:', err);
+                    const errorMsg = err.error?.message || (typeof err.error === 'string' ? err.error : null) || err.message;
+                    this.showError('Erreur création : ' + errorMsg);
+                }
             });
         } else {
             const keys: any = {};
@@ -132,7 +136,11 @@ export class DynamicGridComponent implements OnInit {
                     this.loadTableData();
                     this.cancelEdit();
                 },
-                error: () => this.showError('Erreur mise à jour')
+                error: (err) => {
+                    console.error('Erreur mise à jour:', err);
+                    const errorMsg = err.error?.message || (typeof err.error === 'string' ? err.error : null) || err.message;
+                    this.showError('Erreur mise à jour : ' + errorMsg);
+                }
             });
         }
     }
@@ -213,11 +221,20 @@ export class DynamicGridComponent implements OnInit {
                 if (excelData.length > 0) {
                     if (confirm(`Importer ${excelData.length} lignes en base pour la table Oracle ${this.tableName} ?`)) {
                         this.api.insertBulk(this.tableName, excelData).subscribe({
-                            next: () => {
-                                this.showSuccess('Importation Excel réussie en bulk : ' + excelData.length + ' lignes');
+                            next: (res: any) => {
+                                let msg = `Importation réussie : ${res.insertedCount} lignes.`;
+                                if (res.skippedClis && res.skippedClis.length > 0) {
+                                    msg += ` Ignorés (${res.skippedClis.length}) : ${res.skippedClis.join(', ')}`;
+                                    this.snackBar.open(msg, 'OK', { duration: 10000, panelClass: ['warning-snackbar'] });
+                                } else {
+                                    this.showSuccess(msg);
+                                }
                                 this.loadTableData();
                             },
-                            error: (err) => this.showError('Erreur import Bulk: ' + err.message)
+                            error: (err) => {
+                                const errorMsg = (err.error && err.error.message) ? err.error.message : err.message;
+                                this.showError('Erreur import Bulk : ' + errorMsg);
+                            }
                         });
                     }
                 } else {

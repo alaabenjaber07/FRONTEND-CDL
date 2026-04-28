@@ -1,6 +1,6 @@
 <div class="command-center-header">
     <div class="title-block">
-        <h1>Les Ajustements CDL</h1>
+        <h1>Ajustements & mises à jours</h1>
         <p>Vue d'ensemble de vos tables à ajuster</p>
     </div>
     <button mat-raised-button color="primary" routerLink="/schema-manager" *ngIf="authService.isAdmin()"
@@ -23,13 +23,15 @@
             <div mat-card-avatar class="table-avatar">
                 <mat-icon>{{ table.TABLE_NAME.includes('SUIVI') ? 'analytics' : 'grid_view' }}</mat-icon>
             </div>
-            <mat-card-title>{{ table.TABLE_NAME }}</mat-card-title>
+            <mat-card-title>{{ table.TABLE_NAME === 'CDL_AJUSTEMENT' ? 'Ajustement Classe' : table.TABLE_NAME
+                }}</mat-card-title>
             <mat-card-subtitle>Table Dynamique Oracle</mat-card-subtitle>
         </mat-card-header>
 
         <mat-card-content>
             <p class="description">
-                Supervision et gestion complète des données pour <strong>{{ table.TABLE_NAME }}</strong>.
+                Supervision et gestion complète des données pour <strong>{{ table.TABLE_NAME === 'CDL_AJUSTEMENT' ?
+                    'Ajustement Classe' : table.TABLE_NAME }}</strong>.
             </p>
             <div class="metadata">
                 <div class="status-indicator">

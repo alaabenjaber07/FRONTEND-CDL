@@ -7,13 +7,13 @@
                     {{ executionState?.isExecuting ? 'autorenew' : 'task_alt' }}
                 </mat-icon>
                 <div class="title-meta">
-                    <span class="eyebrow">Avancement CDL</span>
+                    <span class="eyebrow">Avancement traitement CDL</span>
                     <h2>{{ executionState?.isExecuting ? 'Traitement en cours' : 'Mission accomplie' }}</h2>
                 </div>
             </div>
             <div class="config-tag" *ngIf="executionState?.configName">
                 <mat-icon>settings_input_component</mat-icon>
-                {{ executionState.configName }}
+                {{ executionState.configName === 'CDL_ajustement' ? 'Ajustement Classe' : executionState.configName }}
             </div>
         </div>
 
@@ -50,7 +50,7 @@
                 <div class="cancel-card">
                     <mat-icon color="warn">warning</mat-icon>
                     <h4>Confirmation d'Annulation</h4>
-                    <p>Veuillez entrer le mot de passe administrateur pour stopper le CDL.</p>
+                    <p>Veuillez entrer le mot de passe administrateur pour stopper le traitement.</p>
                     <mat-form-field appearance="outline" class="full-width">
                         <mat-label>Mot de passe</mat-label>
                         <input matInput type="password" [(ngModel)]="cancelPassword" (keyup.enter)="confirmCancel()">
@@ -58,7 +58,7 @@
                     </mat-form-field>
                     <div class="cancel-btns">
                         <button mat-button (click)="showCancelPrompt = false">CONSERVER</button>
-                        <button mat-raised-button color="warn" (click)="confirmCancel()">ANNULER LE CDL</button>
+                        <button mat-raised-button color="warn" (click)="confirmCancel()">ANNULER LE TRAITEMENT</button>
                     </div>
                 </div>
             </div>
@@ -74,12 +74,12 @@
                             <mat-icon *ngIf="isExtracting1" class="spin-icon">autorenew</mat-icon>
                             <mat-icon *ngIf="extractionReady1">check_circle</mat-icon>
 
-                            <span *ngIf="!isExtracting1 && !extractionReady1">EXTRACTION 1 CDL</span>
+                            <span *ngIf="!isExtracting1 && !extractionReady1">EXTRACTION 1</span>
                             <span *ngIf="isExtracting1">
                                 GÉNÉRATION... {{extractionPercent1}}%
                                 <small>({{processedRows1}} lignes)</small>
                             </span>
-                            <span *ngIf="extractionReady1">TÉLÉCHARGER CDL 1</span>
+                            <span *ngIf="extractionReady1">TÉLÉCHARGER EXTRACTION 1</span>
                         </button>
                         <button mat-icon-button color="warn" *ngIf="isExtracting1" (click)="cancelExtraction(1)"
                             matTooltip="Annuler cette extraction">
@@ -100,7 +100,7 @@
                                 GÉNÉRATION... {{extractionPercent2}}%
                                 <small>({{processedRows2}} lignes)</small>
                             </span>
-                            <span *ngIf="extractionReady2">TÉLÉCHARGER CDL 2</span>
+                            <span *ngIf="extractionReady2">TÉLÉCHARGER TDB</span>
                         </button>
                         <button mat-icon-button color="warn" *ngIf="isExtracting2" (click)="cancelExtraction(2)"
                             matTooltip="Annuler cette extraction">

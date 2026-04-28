@@ -105,6 +105,12 @@ export class QueryExecutorService {
         );
     }
 
+    cancelExecutionSecure(configName: string, password: string): Observable<any> {
+        return this.http.post(`${this.apiUrl}/cancel-secure/${configName}`, { password }).pipe(
+            tap(() => this.resetState())
+        );
+    }
+
     stopPolling() {
         if (this.pollingSubscription) {
             this.pollingSubscription.unsubscribe();

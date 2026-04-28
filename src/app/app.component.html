@@ -6,13 +6,13 @@
           (error)="handleLogoError()">
         <mat-icon *ngIf="logoError" class="brand-icon-fallback">account_balance</mat-icon>
       </div>
-      <span class="logo-text">CDL</span>
+      <span class="logo-text">Tableau des engagements</span>
     </div>
 
     <div class="nav-links">
       <button mat-button routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
         class="nav-item">
-        <mat-icon>dashboard</mat-icon> Ajustement
+        <mat-icon>dashboard</mat-icon> Ajustements
       </button>
       <button mat-button routerLink="/query-executor" routerLinkActive="active" class="nav-item">
         <mat-icon>bolt</mat-icon> Lancement Tableau d’engagement
@@ -41,7 +41,7 @@
     <div class="mini-progress-zone" *ngIf="executionState?.isExecuting" routerLink="/monitoring"
       title="Traitement CDL en cours">
       <div class="mini-stats">
-        <span class="mini-label">CDL : {{ executionState?.progress }}%</span>
+        <span class="mini-label">Traitement : {{ executionState?.progress }}%</span>
       </div>
       <div class="mini-progress-track">
         <div class="mini-progress-fill shimmer" [style.width.%]="executionState?.progress"></div>
