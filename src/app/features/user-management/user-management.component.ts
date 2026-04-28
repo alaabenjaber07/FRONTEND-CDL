@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService, AppUser } from '../../services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'app-user-management',
@@ -19,7 +20,8 @@ export class UserManagementComponent implements OnInit {
     constructor(
         private userService: UserService,
         private snackBar: MatSnackBar,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private location: Location
     ) {
         this.userForm = this.fb.group({
             username: ['', Validators.required],
@@ -36,6 +38,10 @@ export class UserManagementComponent implements OnInit {
         this.loadUsers();
     }
 
+    goBack() {
+        this.location.back();
+    }
+
     loadUsers() {
         this.loading = true;
         this.userService.getAllUsers().subscribe({
@@ -45,9 +51,27 @@ export class UserManagementComponent implements OnInit {
             },
             error: (err) => {
                 console.error('Erreur chargement utilisateurs', err);
-                this.snackBar.open('Erreur lors du chargement des utilisateurs', 'Fermer', { duration: 3000 });
+                this.showError('Erreur lors du chargement des utilisateurs');
                 this.loading = false;
             }
+        });
+    }
+
+    showSuccess(msg: string) {
+        this.snackBar.open(msg, 'Fermer', {
+            duration: 3000,
+            panelClass: ['success-snackbar'],
+            horizontalPosition: 'right',
+            verticalPosition: 'top'
+        });
+    }
+
+    showError(msg: string) {
+        this.snackBar.open(msg, 'Fermer', {
+            duration: 5000,
+            panelClass: ['error-snackbar'],
+            horizontalPosition: 'right',
+            verticalPosition: 'top'
         });
     }
 
@@ -75,17 +99,17 @@ export class UserManagementComponent implements OnInit {
 
     deleteUser(user: AppUser) {
         if (user.role === 'SUPER_ADMIN') {
-            this.snackBar.open('Impossible de supprimer un compte SUPER_ADMIN via cette interface.', 'Fermer', { duration: 3000 });
+            this.showError('Impossible de supprimer un compte SUPER_ADMIN via cette interface.');
             return;
         }
         if (confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur ${user.username} ?`)) {
             this.userService.deleteUser(user.id!).subscribe({
                 next: () => {
-                    this.snackBar.open('Utilisateur supprimé avec succès', 'Fermer', { duration: 3000 });
+                    this.showSuccess('Utilisateur supprimé avec succès');
                     this.loadUsers();
                 },
                 error: (err) => {
-                    this.snackBar.open(err.error?.message || 'Erreur lors de la suppression', 'Fermer', { duration: 3000 });
+                    this.showError(err.error?.message || 'Erreur lors de la suppression');
                 }
             });
         }
@@ -99,27 +123,27 @@ export class UserManagementComponent implements OnInit {
         if (this.isEditMode && this.editingUserId) {
             this.userService.updateUser(this.editingUserId, formValue).subscribe({
                 next: () => {
-                    this.snackBar.open('Utilisateur mis à jour', 'Fermer', { duration: 3000 });
+                    this.showSuccess('Utilisateur mis à jour');
                     this.cancelEdit();
                     this.loadUsers();
                 },
                 error: (err) => {
-                    this.snackBar.open(err.error || 'Erreur de mise à jour', 'Fermer', { duration: 3000 });
+                    this.showError(err.error || 'Erreur de mise à jour');
                 }
             });
         } else {
             if (!formValue.password) {
-                this.snackBar.open('Le mot de passe est obligatoire pour la création', 'Fermer', { duration: 3000 });
+                this.showError('Le mot de passe est obligatoire pour la création');
                 return;
             }
             this.userService.createUser(formValue).subscribe({
                 next: () => {
-                    this.snackBar.open('Utilisateur créé avec succès', 'Fermer', { duration: 3000 });
+                    this.showSuccess('Utilisateur créé avec succès');
                     this.cancelEdit();
                     this.loadUsers();
                 },
                 error: (err) => {
-                    this.snackBar.open(err.error || 'Erreur de création', 'Fermer', { duration: 3000 });
+                    this.showError(err.error || 'Erreur de création');
                 }
             });
         }
