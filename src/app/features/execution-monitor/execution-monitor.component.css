@@ -178,3 +178,17 @@
 .spinning {
     animation: spin 2s linear infinite;
 }
+
+.btn-cancel-elite {
+    padding: 24px 32px !important;
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 16px rgba(212, 92, 84, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-cancel-elite:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px rgba(212, 92, 84, 0.4) !important;
+}

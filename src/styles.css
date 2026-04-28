@@ -148,3 +148,21 @@ mat-table {
   letter-spacing: 0.01em !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
 }
+
+/* Snackbar Styles */
+.mat-mdc-snack-bar-container {
+  margin-top: 80px !important;
+  /* Move down to avoid top bar overlap */
+}
+
+.success-snackbar {
+  --mdc-snackbar-container-color: var(--success-emerald) !important;
+  --mat-snack-bar-button-color: white !important;
+  color: white !important;
+}
+
+.error-snackbar {
+  --mdc-snackbar-container-color: var(--error-rose) !important;
+  --mat-snack-bar-button-color: white !important;
+  color: white !important;
+}

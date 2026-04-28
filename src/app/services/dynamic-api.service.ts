@@ -10,7 +10,27 @@ import { ColumnDefinition, TableDefinition, AuditLog } from '../models/dynamic.m
 export class DynamicApiService {
     private baseUrl = environment.apiUrl;
 
+    private tableNameMap: { [key: string]: string } = {
+        'AJUST_EPS_CONTRE_GAR': 'EPS_CONTRE_GARANTIE',
+        'AJUST_CDE': 'EPS_CDE',
+        'CDL_NANTISSEMENT': 'NANTISSEMENT_ACTION',
+        'CDL_DEPOT': 'DEPOT_AFF',
+        'CDL_GAR_ETAT': 'GAR_ETAT',
+        'CDL_FNG': 'GAR_FNG',
+        'CDL_FNE': 'GAR_FNE',
+        'CDL_GAR_BQUE': 'GAR_BQUE',
+        'CDL_SOTUGAR': 'SOTUGAR',
+        'AJUST_PROSOL': 'PROSOL',
+        'CDL_GAR_HYP': 'GAR_HYP',
+        'CDL_AJUSTEMENT': 'Ajustement Classe'
+    };
+
     constructor(private http: HttpClient) { }
+
+    getDisplayName(tableName: string): string {
+        if (!tableName) return '';
+        return this.tableNameMap[tableName.toUpperCase()] || tableName;
+    }
 
     // Tables
     getTables(): Observable<any[]> {

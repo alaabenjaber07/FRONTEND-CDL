@@ -4,15 +4,15 @@
             <mat-icon>arrow_back</mat-icon>
         </button>
         <div class="title-group">
-            <div class="subtitle-nexus">GESTION DES DONNÉES</div>
-            <h2>{{ tableName === 'CDL_AJUSTEMENT' ? 'Ajustement Classe' : tableName }}</h2>
+            <div class="subtitle-nexus">ADMINISTRATION : {{ tableName.toUpperCase() }}</div>
+            <h2>{{ api.getDisplayName(tableName) }}</h2>
         </div>
     </div>
 
     <div class="nexus-actions">
         <mat-form-field appearance="outline" class="search-nexus">
             <mat-icon matPrefix>search</mat-icon>
-            <mat-label>Filtrer les enregistrements...</mat-label>
+            <mat-label>Filtrer...</mat-label>
             <input matInput (keyup)="applyFilter($event)">
         </mat-form-field>
 
@@ -22,7 +22,8 @@
             </button>
             <input hidden type="file" #fileInput (change)="importExcel($event)" accept=".xlsx, .xls, .csv">
 
-            <button mat-raised-button color="warn" (click)="deleteAll()" class="btn-danger">
+            <button mat-raised-button color="warn" (click)="deleteAll()" class="btn-danger"
+                *ngIf="authService.isAdmin()">
                 <mat-icon>auto_delete</mat-icon> VIDER
             </button>
 

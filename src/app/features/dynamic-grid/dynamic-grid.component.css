@@ -2,10 +2,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 50px;
-    padding: 0 10px;
-    gap: 40px;
-    /* Force space between left and right side */
+    margin-bottom: 32px;
+    background: white;
+    padding: 24px 32px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-premium);
+    flex-wrap: wrap;
+    gap: 24px;
 }
 
 .subtitle-nexus {
@@ -62,7 +65,27 @@ tr.mat-row:hover {
 .header-left {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
+}
+
+.back-btn-elite {
+    background: #f1f5f9 !important;
+    color: #64748b !important;
+    transition: all 0.3s ease;
+}
+
+.back-btn-elite:hover {
+    background: #e2e8f0 !important;
+    color: var(--primary-brand) !important;
+    transform: translateX(-3px);
+}
+
+.title-group h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary-deep);
+    letter-spacing: -0.02em;
 }
 
 .hidden {

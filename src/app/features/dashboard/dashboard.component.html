@@ -23,21 +23,19 @@
             <div mat-card-avatar class="table-avatar">
                 <mat-icon>{{ table.TABLE_NAME.includes('SUIVI') ? 'analytics' : 'grid_view' }}</mat-icon>
             </div>
-            <mat-card-title>{{ table.TABLE_NAME === 'CDL_AJUSTEMENT' ? 'Ajustement Classe' : table.TABLE_NAME
-                }}</mat-card-title>
+            <mat-card-title>{{ getDisplayName(table.TABLE_NAME) }}</mat-card-title>
             <mat-card-subtitle>Table Dynamique Oracle</mat-card-subtitle>
         </mat-card-header>
 
         <mat-card-content>
             <p class="description">
-                Supervision et gestion complète des données pour <strong>{{ table.TABLE_NAME === 'CDL_AJUSTEMENT' ?
-                    'Ajustement Classe' : table.TABLE_NAME }}</strong>.
+                Supervision et gestion complète des données for <strong>{{ getDisplayName(table.TABLE_NAME) }}</strong>.
             </p>
             <div class="metadata">
                 <div class="status-indicator">
                     <span class="pulse-dot"></span> Connecté
                 </div>
-                <div class="type-badge">ORACLE DB</div>
+                <div class="  badge">ORACLE DB</div>
             </div>
         </mat-card-content>
 

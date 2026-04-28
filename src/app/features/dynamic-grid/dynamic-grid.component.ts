@@ -7,6 +7,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../../services/auth.service';
 import * as XLSX from 'xlsx';
 
 @Component({
@@ -29,9 +30,10 @@ export class DynamicGridComponent implements OnInit {
 
     constructor(
         private route: ActivatedRoute,
-        private api: DynamicApiService,
+        public api: DynamicApiService,
         private snackBar: MatSnackBar,
-        private location: Location
+        private location: Location,
+        public authService: AuthService
     ) { }
 
     goBack(): void {
@@ -102,7 +104,7 @@ export class DynamicGridComponent implements OnInit {
                 error: (err) => {
                     console.error('Erreur insertion:', err);
                     const errorMsg = err.error?.message || (typeof err.error === 'string' ? err.error : null) || err.message;
-                    this.showError('Erreur création : ' + errorMsg);
+                    this.showError(errorMsg);
                 }
             });
         } else {
@@ -222,18 +224,12 @@ export class DynamicGridComponent implements OnInit {
                     if (confirm(`Importer ${excelData.length} lignes en base pour la table Oracle ${this.tableName} ?`)) {
                         this.api.insertBulk(this.tableName, excelData).subscribe({
                             next: (res: any) => {
-                                let msg = `Importation réussie : ${res.insertedCount} lignes.`;
-                                if (res.skippedClis && res.skippedClis.length > 0) {
-                                    msg += ` Ignorés (${res.skippedClis.length}) : ${res.skippedClis.join(', ')}`;
-                                    this.snackBar.open(msg, 'OK', { duration: 10000, panelClass: ['warning-snackbar'] });
-                                } else {
-                                    this.showSuccess(msg);
-                                }
+                                this.showSuccess(`Importation réussie : ${res.insertedCount} lignes.`);
                                 this.loadTableData();
                             },
                             error: (err) => {
-                                const errorMsg = (err.error && err.error.message) ? err.error.message : err.message;
-                                this.showError('Erreur import Bulk : ' + errorMsg);
+                                const errorMsg = err.error?.message || (typeof err.error === 'string' ? err.error : null) || err.message;
+                                this.showError(errorMsg);
                             }
                         });
                     }
@@ -262,11 +258,21 @@ export class DynamicGridComponent implements OnInit {
     }
 
     showSuccess(msg: string) {
-        this.snackBar.open(msg, 'Fermer', { duration: 3000, panelClass: ['success-snackbar'] });
+        this.snackBar.open(msg, 'Fermer', {
+            duration: 3000,
+            panelClass: ['success-snackbar'],
+            horizontalPosition: 'right',
+            verticalPosition: 'top'
+        });
     }
 
     showError(msg: string) {
-        this.snackBar.open(msg, 'Fermer', { duration: 5000, panelClass: ['error-snackbar'] });
+        this.snackBar.open(msg, 'Fermer', {
+            duration: 5000,
+            panelClass: ['error-snackbar'],
+            horizontalPosition: 'right',
+            verticalPosition: 'top'
+        });
         this.loading = false;
     }
 }

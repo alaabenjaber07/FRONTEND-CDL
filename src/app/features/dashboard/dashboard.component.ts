@@ -11,7 +11,7 @@ export class DashboardComponent implements OnInit {
     tables: any[] = [];
     loading = true;
 
-    constructor(private api: DynamicApiService, public authService: AuthService) { }
+    constructor(public api: DynamicApiService, public authService: AuthService) { }
 
     ngOnInit(): void {
         this.api.getTables().subscribe({
@@ -24,5 +24,9 @@ export class DashboardComponent implements OnInit {
                 this.loading = false;
             }
         });
+    }
+
+    getDisplayName(name: string): string {
+        return this.api.getDisplayName(name);
     }
 }

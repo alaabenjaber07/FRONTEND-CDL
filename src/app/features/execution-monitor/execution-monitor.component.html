@@ -43,6 +43,13 @@
                     <span>Dernière Étape executée : <strong>{{ executionState?.message || 'Récupération du statut...'
                             }}</strong></span>
                 </div>
+
+                <div class="active-cancel-group" *ngIf="executionState?.isExecuting && !showCancelPrompt"
+                    style="margin-top: 30px; display: flex; justify-content: center;">
+                    <button mat-raised-button color="warn" (click)="promptCancel()" class="btn-cancel-elite">
+                        <mat-icon>cancel</mat-icon> ANNULER LE TRAITEMENT CDL
+                    </button>
+                </div>
             </div>
 
             <!-- Cancel Prompt Overlay-like area -->
